@@ -1,12 +1,15 @@
-import './ExploreContainer.css';
+import { useSelector } from 'react-redux';
+import './ExploreContainer.css'
+import { RootState } from '../state';
 
 interface ContainerProps { }
 
 const ExploreContainer: React.FC<ContainerProps> = () => {
+  const {currentLocation} = useSelector((state:RootState) => state.app)
+
   return (
     <div id="container">
-      <strong>Ready to create an app?</strong>
-      <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+      <strong>{currentLocation?.lat + ' ' + currentLocation?.lng}</strong>
     </div>
   );
 };
