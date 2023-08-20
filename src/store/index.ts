@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { appSlice } from './app'
 import { useDispatch } from 'react-redux'
+import { weatherSlice } from './weather'
 
 const store = configureStore({reducer:{
     app: appSlice.reducer,
+    weather: weatherSlice.reducer,
 }})
 
 export default store
