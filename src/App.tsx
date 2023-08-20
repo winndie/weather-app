@@ -17,18 +17,24 @@ const App:React.FC=()=> {
   },[dispatch])
 
   return (
+    loading?<>Loading...</>:
     <Page>
       <Navbar title={process.env.REACT_APP_SEARCH_TITLE}>
         <Subnavbar inner={false}>
           <Searchbar searchContainer=".search-list" searchIn=".item-title" />
         </Subnavbar>
       </Navbar>
+      {list.length === 0?
       <List strongIos outlineIos dividersIos className="searchbar-not-found">
-        <ListItem title="Nothing found" />
-      </List>
+      <ListItem title="Nothing found" />
+    </List>
+    :
+    list.map(x=>(
       <List strongIos outlineIos dividersIos className="search-list searchbar-found">
-      <ListItem title="Volvo" />
-      </List>
+      <div>{x.weather.temperature}</div>
+      </List>  
+    ))
+    }
     </Page>  
     )
 }
