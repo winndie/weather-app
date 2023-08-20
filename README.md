@@ -1,46 +1,100 @@
-# Getting Started with Create React App
+# Weather App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Framework7 CLI Options
 
-## Available Scripts
+Framework7 app created with following options:
 
-In the project directory, you can run:
+```
+{
+  "cwd": "C:\\work\\SecuriGroup",
+  "type": [
+    "capacitor",
+    "web"
+  ],
+  "name": "Weather App",
+  "framework": "react",
+  "template": "single-view",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false,
+  "pkg": "com.codingegret.weatherapp",
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
+}
+```
 
-### `npm start`
+## Install Dependencies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+First of all we need to install dependencies, run in terminal
+```
+npm install
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## NPM Scripts
 
-### `npm test`
+* 🔥 `start` - run development server
+* 🔧 `dev` - run development server
+* 🔧 `build` - build web app for production
+* 📱 `build-capacitor-ios` - build app and copy it to iOS capacitor project
+* 📱 `build-capacitor-android` - build app and copy it to Android capacitor project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Vite
 
-### `npm run build`
+There is a [Vite](https://vitejs.dev) bundler setup. It compiles and bundles all "front-end" resources. You should work only with files located in `/src` folder. Vite config located in `vite.config.js`.
+## Capacitor
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project created with Capacitor support. And first thing required before start is to add capacitor platforms, run in terminal:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+npx cap add ios && npx cap add android
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Check out [official Capacitor documentation](https://capacitorjs.com) for more examples and usage examples.
 
-### `npm run eject`
+## Assets
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Assets (icons, splash screens) source images located in `assets-src` folder. To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+framework7 assets
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Or launch UI where you will be able to change icons and splash screens:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+framework7 assets --ui
+```
 
-## Learn More
+## Capacitor Assets
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Capacitor assets are located in `resources` folder which is intended to be used with `cordova-res` tool. To generate  mobile apps assets run in terminal:
+```
+npx cordova-res
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Check out [official cordova-res documentation](https://github.com/ionic-team/cordova-res) for more usage examples.
+
+## Documentation & Resources
+
+* [Framework7 Core Documentation](https://framework7.io/docs/)
+
+* [Framework7 React Documentation](https://framework7.io/react/)
+
+* [Framework7 Icons Reference](https://framework7.io/icons/)
+* [Community Forum](https://forum.framework7.io)
+
+## Support Framework7
+
+Love Framework7? Support project by donating or pledging on:
+- Patreon: https://patreon.com/framework7
+- OpenCollective: https://opencollective.com/framework7

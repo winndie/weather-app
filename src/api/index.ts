@@ -49,7 +49,7 @@ export async function getCurrentWeatherByLocation(location:ILocation):Promise<IW
         location : {} as ILocation,
         weather : {} as IWeather
     } as IWeatherResult
-    const request = `${process.env.REACT_APP_OPEN_METEO_URL}?current_weather=true&latitude=${location.lat}&longitude=${location.lng}`
+    const request = `${import.meta.env.VITE_OPEN_METEO_URL}?current_weather=true&latitude=${location.lat}&longitude=${location.lng}`
     const resp = await axios.get(request)
     if(resp.status === 200 && resp.data.current_weather)
     {
@@ -66,7 +66,7 @@ export async function getCurrentWeatherByLocation(location:ILocation):Promise<IW
 
 export async function getLocationByPostcode(postcode:string):Promise<ILocation>{
     const result = {} as ILocation
-    const request = `${process.env.REACT_APP_POSTCODE_IO_URL}${postcode.replace(' ','')}`
+    const request = `${import.meta.env.VITE_POSTCODE_IO_URL}${postcode.replace(' ','')}`
     const resp = await axios.get(request)
     if(resp.status === 200)
     {

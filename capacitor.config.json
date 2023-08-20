@@ -1,0 +1,13 @@
+{
+  "appId": "com.codingegret.weatherapp",
+  "appName": "Weather App",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
