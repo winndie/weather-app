@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@capacitor/cli": "^5.2.3",
     "@capacitor-community/sqlite": "^5.0.7-2",
     "@capacitor/android": "^5.2.3",
+    "@capacitor/ios": "5.2.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -26,7 +28,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "android": "npm run build && npx cap run android",
+    "android": "npm run build && npx cap sync android && npx cap run android",
+    "ios": "npm run build && npx cap sync ios && npx cap run ios",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
