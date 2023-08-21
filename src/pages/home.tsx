@@ -23,7 +23,6 @@ const HomePage = () => {
 
   useEffect(()=>{
       dispatch(getWeatherBySearchText({searchText:'G2 4AA',isPostcode:true}))
-      setStyleValue('deg',-90)
   },[dispatch])
   
   return (
@@ -41,11 +40,15 @@ const HomePage = () => {
       <ListItem title="Nothing found" />
     </List>
     :
-    list.map(x=>(
+    list.map(x=>{
+
+      setStyleValue('deg',x.weather.windDirection)
+    
+    return (
       <List strongIos outlineIos dividersIos className="search-list searchbar-found">
-      <div>{x.weather.temperature}</div><Icon f7={icon} ios={'f7:'+icon} className='east'></Icon>
+      <div>{x.weather.temperature}</div><Icon f7={icon} ios={'f7:'+icon} className='wind-direction'></Icon>
       </List>  
-    ))
+    )})
     }
     </Block>
   </Page>

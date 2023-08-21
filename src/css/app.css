@@ -3,6 +3,6 @@
     --deg: 0deg
 }
 
-.east {
+.wind-direction {
     rotate: var(--deg)
 }
