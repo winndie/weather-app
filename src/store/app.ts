@@ -6,6 +6,7 @@ export const appSlice = createSlice({
     initialState: {
         loading:false as boolean,
         currentLocation: undefined as ILocation|undefined,
+        currentCountry: undefined as string|undefined,
     },
     reducers: {
         setAppLoading: (state, action:PayloadAction<boolean>) => {
@@ -13,6 +14,9 @@ export const appSlice = createSlice({
         },      
         setCurrentLocation: (state, action:PayloadAction<ILocation>) => {
             state.currentLocation = action.payload
+        },      
+        setCurrentCountry: (state, action:PayloadAction<string>) => {
+            state.currentCountry = action.payload
         },      
     },
   })

@@ -15,8 +15,8 @@ const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
             const resp = await Geolocation.getCurrentPosition()
             if(resp.coords)
             {
-                result.location.lat = resp.coords.latitude
-                result.location.lng = resp.coords.longitude
+                result.location.latitude = resp.coords.latitude
+                result.location.longitude = resp.coords.longitude
                 setCurrentLocation(result.location)
             }
 
@@ -49,12 +49,12 @@ export async function getCurrentWeatherByLocation(location:ILocation):Promise<IW
         location : {} as ILocation,
         weather : {} as IWeather
     } as IWeatherResult
-    const request = `${import.meta.env.VITE_OPEN_METEO_URL}?current_weather=true&latitude=${location.lat}&longitude=${location.lng}`
+    const request = `${import.meta.env.VITE_OPEN_METEO_URL}?current_weather=true&latitude=${location.latitude}&longitude=${location.longitude}`
     const resp = await axios.get(request)
     if(resp.status === 200 && resp.data.current_weather)
     {
-        result.location.lat = location.lat
-        result.location.lng = location.lng
+        result.location.latitude = location.latitude
+        result.location.longitude = location.longitude
         result.datetime = resp.data.current_weather.time
         result.weather.temperature = resp.data.current_weather.temperature
         result.weather.windSpeed = resp.data.current_weather.windspeed
@@ -70,8 +70,8 @@ export async function getLocationByPostcode(postcode:string):Promise<ILocation>{
     const resp = await axios.get(request)
     if(resp.status === 200)
     {
-        result.lat = resp.data.result.latitude
-        result.lng = resp.data.result.longitude
+        result.latitude = resp.data.result.latitude
+        result.longitude = resp.data.result.longitude
     }
     return result
 }

@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import {
   Page,
   Navbar,
-  NavTitleLarge,
   Block,
   Subnavbar,
   Searchbar,
   List,
   ListItem,
+  Preloader,
 } from 'framework7-react';
 import { RootState, useAppDispatch } from '../store'
 import { useSelector } from 'react-redux'
@@ -22,7 +22,7 @@ const HomePage = () => {
   },[dispatch])
   
   return (
-    loading?<>Loading...</>:
+    loading?<Preloader/>:
     <Page name="home">
     {/* Top Navbar */}
     <Navbar large sliding={false}>
