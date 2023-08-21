@@ -5,6 +5,7 @@ export const appSlice = createSlice({
     name: 'app',
     initialState: {
         loading:false as boolean,
+        appName:'Weather App',
         currentLocation: undefined as ILocation|undefined,
         currentCountry: undefined as string|undefined,
     },

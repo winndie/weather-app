@@ -1,1 +1,8 @@
 /* Your app custom styles here */
+:root {
+    --deg: 0deg
+}
+
+.east {
+    rotate: var(--deg)
+}

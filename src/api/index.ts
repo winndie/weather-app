@@ -34,7 +34,7 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string,i
         try{
             setWeatherLoading(true)
             const result = {} as IWeatherResultDto 
-            const weather = await getCurrentWeatherByLocation(await getLocationByPostcode(request.searchText))
+            const weather = await getWeatherByLocation(await getLocationByPostcode(request.searchText))
             thunkAPI.dispatch(addWeatherList( weather ))
         }catch(e){
 
@@ -44,7 +44,7 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string,i
     }
 )
 
-export async function getCurrentWeatherByLocation(location:ILocation):Promise<IWeatherResult>{
+export async function getWeatherByLocation(location:ILocation):Promise<IWeatherResult>{
     const result = {
         location : {} as ILocation,
         weather : {} as IWeather
