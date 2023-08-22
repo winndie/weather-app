@@ -1,33 +1,27 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   Page,
   Navbar,
   Subnavbar,
-  Searchbar,
   List,
   ListItem,
   Preloader,
 } from 'framework7-react';
-import { RootState, useAppDispatch } from '../store'
+import { RootState } from '../store'
 import { useSelector } from 'react-redux'
-import { getWeatherBySearchText } from '../api'
 import WeatherBox from '../components/weather';
+import SearchBar from '../components/searchBar';
 
 const HomePage = () => {
-  const dispatch = useAppDispatch()
   const {appName} = useSelector((state:RootState) => state.app)
   const {loading,list} = useSelector((state:RootState) => state.weather)
 
-  useEffect(()=>{
-      dispatch(getWeatherBySearchText({searchText:'G2 4AA',isPostcode:true}))
-  },[dispatch])
-  
   return (
     loading?<Preloader/>:
     <Page name="home">
     <Navbar large title={appName} sliding={false}>
         <Subnavbar inner={false}>
-          <Searchbar searchContainer=".search-list" searchIn=".item-title" />
+          <SearchBar />
         </Subnavbar>
     </Navbar>
     <>
@@ -38,9 +32,10 @@ const HomePage = () => {
     :
     list.map((x,i)=>(
       <List key={i} dividersIos mediaList outlineIos strongIos>
+        <div className='padding-left'>{'Search result for : '+x.searchText}</div>
         <WeatherBox weather={x.currentWeather} temperature={x.temperature} isCurrent={true} />
-        <div className='display-flex'>
-        {x.hourlyWeather.map(y=><WeatherBox weather={y} temperature={x.temperature} isCurrent={false} />)}
+        <div className='display-flex hourly-list padding'>
+        {x.hourlyWeather.map((y,r)=><WeatherBox key={r} weather={y} temperature={x.temperature} isCurrent={false} />)}
         </div>
       </List>
     ))

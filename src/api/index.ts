@@ -6,6 +6,7 @@ import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
 import {mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
+import { postcodeRegex } from '../constants'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -29,14 +30,23 @@ const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     }
 )
 
-export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string,isPostcode:boolean},{state:RootState}>(
+export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},{state:RootState}>(
     'weather/postcode/get',
     async (request, thunkAPI) => {
         try{
-            setWeatherLoading(true)
+            setWeatherLoading(true)            
             const result = {} as IWeatherResultDto 
+            const isPostCode = new RegExp(postcodeRegex).test(request.searchText)
+
+            if(isPostCode)
+                return
+
             const weather = await getWeatherByLocation(await getLocationByPostcode(request.searchText))
-            thunkAPI.dispatch(addWeatherList( weather ))
+            if(weather && weather.hourlyWeather.length>0)
+            {
+                weather.searchText = request.searchText
+                thunkAPI.dispatch(addWeatherList( weather ))
+            }
         }catch(e){
 
         }finally{
@@ -70,6 +80,18 @@ export async function getWeatherByLocation(location:ILocation):Promise<IWeatherR
 export async function getLocationByPostcode(postcode:string):Promise<ILocation>{
     const result = {} as ILocation
     const request = `${import.meta.env.VITE_POSTCODE_IO_URL}${postcode.replace(' ','')}`
+    const resp = await axios.get(request)
+    if(resp.status === 200)
+    {
+        result.latitude = resp.data.result.latitude
+        result.longitude = resp.data.result.longitude
+    }
+    return result
+}
+
+export async function getLocationBySearchText(searchText:string):Promise<ILocation>{
+    const result = {} as ILocation
+    const request = `${import.meta.env.VITE_GEOCODE_MAPS_URL}${searchText}`
     const resp = await axios.get(request)
     if(resp.status === 200)
     {

@@ -34,10 +34,19 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     </div>)
   }
 
-  const weatherCodeDiv = () => <div className={'align-items-center text-align-center'}>
+  const weatherCodeDiv = () => {
+    return props.isCurrent?
+    <div className={'align-items-center text-align-center'}>
     <Icon f7={weatherCodeDto?.icon} ios={'f7:'+weatherCodeDto?.icon}></Icon>
     <div>{weatherCodeDto?.name}</div>
     </div>
+    :
+    <div className={'hourly-weather-code align-items-center text-align-center'}>
+    <Icon f7={weatherCodeDto?.icon} ios={'f7:'+weatherCodeDto?.icon}></Icon>
+    <div>{weatherCodeDto?.name}</div>
+    </div>
+    
+  }
 
   const windspeedDiv = () => {
     setStyleValue('angle',props.weather.windDirection,'deg')
@@ -65,11 +74,11 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
 
     </Card>
     :
-    <Card className={'padding hourly'}>
+    <div className={'margin-right padding hourly'}>
         {temperatureDiv()}
         {weatherCodeDiv()}
         {windspeedDiv()}
-    </Card>
+    </div>
 )}
 
 export default WeatherBox
