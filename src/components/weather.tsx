@@ -28,13 +28,13 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
         setStyleValue('temperature-max',max,'')    
     }
 
-    return (<div className='text-center'>
+    return (<div className='text-align-center'>
     <div>{props.isCurrent?currentDate:hour}</div>
     <div><span >{props.weather.temperature}</span><abbr className='temperature-unit'>&#8451;</abbr></div>
     </div>)
   }
 
-  const weatherCodeDiv = () => <div className='text-center'>
+  const weatherCodeDiv = () => <div className={'align-items-center text-align-center'}>
     <Icon f7={weatherCodeDto?.icon} ios={'f7:'+weatherCodeDto?.icon}></Icon>
     <div>{weatherCodeDto?.name}</div>
     </div>
@@ -43,7 +43,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     setStyleValue('angle',props.weather.windDirection,'deg')
 
     return (
-        <div className='text-center'>
+        <div className='align-items-center text-align-center'>
         <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} className='wind-direction'/>
         <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
         </div>    
@@ -52,20 +52,20 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     
   return (
     props.isCurrent?
-    <Card className={'padding margin align-self-center'}>
+    <Card className={'padding align-self-center'}>
 
     <div className='grid grid-cols-1 medium-grid-cols-2 grid-gap'>
         {temperatureDiv()}
         {weatherCodeDiv()}
     </div>
 
-    <div className='items-center text-center'>
+    <div className='align-content-center'>
         {windspeedDiv()}
     </div>
 
     </Card>
     :
-    <Card className={'temperature-gradient padding align-self-center'}>
+    <Card className={'padding hourly'}>
         {temperatureDiv()}
         {weatherCodeDiv()}
         {windspeedDiv()}
