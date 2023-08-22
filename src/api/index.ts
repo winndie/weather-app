@@ -52,8 +52,7 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
                 weather.searchText = request.searchText
                 weather.postCode = request.searchText
                 thunkAPI.dispatch(addWeatherList( weather ))
-                const qyery = insertTableQuery(weather,thunkAPI.getState().weather.list.length)
-                console.error(qyery)
+                writeToDb(weather,thunkAPI.getState().weather.list.length)
             }
         }catch(e){
 
@@ -109,7 +108,7 @@ export async function getLocationBySearchText(searchText:string):Promise<ILocati
     return result
 }
 
-export async function writeToDb(weather:IWeatherResult){
+export async function writeToDb(weather:IWeatherResult,searchId:number){
     try{
         const conn = new SQLiteConnection(CapacitorSQLite)
         ;(await conn.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false))

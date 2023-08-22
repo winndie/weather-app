@@ -51,7 +51,7 @@ export const insertTableQuery=(weather:IWeatherResult,searchId:number):string=>{
         ${weather.currentWeather.temperature},
         ${weather.currentWeather.windSpeed},
         ${weather.currentWeather.windDirection},
-        ${weather.currentWeather.weatherCode},
+        ${weather.currentWeather.weatherCode}
     ),`
     valuesQuery = valuesQuery + weather.hourlyWeather.map(x=>`(${searchId},0,
         null,
@@ -62,7 +62,7 @@ export const insertTableQuery=(weather:IWeatherResult,searchId:number):string=>{
         ${x.temperature},
         ${x.windSpeed},
         ${x.windDirection},
-        ${x.weatherCode},
+        ${x.weatherCode}
     )`).join(`,`)    
 
     valuesQuery = valuesQuery.substring(0,valuesQuery.length)
