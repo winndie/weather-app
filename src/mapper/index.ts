@@ -1,4 +1,4 @@
-import { IRange, IWeather } from "../types"
+import { IRange, IWeather, IWeatherResult } from "../types"
 
 export const mapCurrentWeather=(data):IWeather=>{
     return {
@@ -38,4 +38,36 @@ export const mapWindSpeedRange=(data):IRange=>{
         min: data.daily.windspeed_10m_max[0],
         max: data.daily.windspeed_10m_min[0]
     }
+}
+
+export const insertTableQuery=(weather:IWeatherResult,searchId:number):string=>{
+
+    let valuesQuery = `(${searchId},1,
+        '${weather.searchText}',
+        '${weather.postCode}',
+        ${weather.location.latitude},
+        ${weather.location.longitude},
+        '${weather.currentWeather.datetime}',
+        ${weather.currentWeather.temperature},
+        ${weather.currentWeather.windSpeed},
+        ${weather.currentWeather.windDirection},
+        ${weather.currentWeather.weatherCode},
+    ),`
+    valuesQuery = valuesQuery + weather.hourlyWeather.map(x=>`(${searchId},0,
+        null,
+        null,
+        null,
+        null,
+        '${x.datetime}',
+        ${x.temperature},
+        ${x.windSpeed},
+        ${x.windDirection},
+        ${x.weatherCode},
+    )`).join(`,`)    
+
+    valuesQuery = valuesQuery.substring(0,valuesQuery.length)
+
+    return `INSERT INTO ${import.meta.env.VITE_DEFAULT_TABLE_NAME} 
+    (is_current,serch_id,serch_text,postcode,latitude,longitude,datetime,temperature,windspeed,winddirection,weathercode)
+    VALUES ${valuesQuery}`
 }

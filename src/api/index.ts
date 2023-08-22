@@ -5,8 +5,14 @@ import { setCurrentLocation,setAppLoading } from '../store/app'
 import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
-import {mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
+import {insertTableQuery, mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
 import { postcodeRegex } from '../constants'
+import {
+    SQLiteDBConnection,
+    SQLiteConnection,
+    CapacitorSQLite,
+  } from "@capacitor-community/sqlite"
+import {createTableQuery} from '../constants'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -35,7 +41,6 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
     async (request, thunkAPI) => {
         try{
             setWeatherLoading(true)            
-            const result = {} as IWeatherResultDto 
             const isPostCode = new RegExp(postcodeRegex).test(request.searchText)
 
             if(isPostCode)
@@ -45,7 +50,10 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
             if(weather && weather.hourlyWeather.length>0)
             {
                 weather.searchText = request.searchText
+                weather.postCode = request.searchText
                 thunkAPI.dispatch(addWeatherList( weather ))
+                const qyery = insertTableQuery(weather,thunkAPI.getState().weather.list.length)
+                console.error(qyery)
             }
         }catch(e){
 
@@ -101,11 +109,20 @@ export async function getLocationBySearchText(searchText:string):Promise<ILocati
     return result
 }
 
-export async function writeToDb(){
+export async function writeToDb(weather:IWeatherResult){
     try{
+        const conn = new SQLiteConnection(CapacitorSQLite)
+        ;(await conn.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false))
+        .execute(createTableQuery)
+        .then(resp=>{
+        })
+
+        if(conn != null)
+        {
+            conn.closeAllConnections()
+        }
     }catch(e){
 
     }finally{
-
     }
 }

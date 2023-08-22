@@ -1,6 +1,4 @@
 
-import { ILocation } from "../types"
-
 export const postcodeRegex = /^([A-Z]{1,2}[0-9]{1,2}[A-Z]{0,1} ?[0-9]{1,2}[A-Z]{0,1})$/
 
 export const monthNames: Map<number,string> = new Map([
@@ -42,3 +40,18 @@ export const weatherCode: Map<number, {name:string,icon:string}> = new Map([
     [24,{name:'Tornado',icon:'arrow_2_circlepath_circle'}],
     [25,{name:'Volcanic ash',icon:'arrow_2_circlepath_circle_fill'}],
 ])
+
+export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (
+	id INTEGER PRIMARY KEY,
+    is_current INTEGER NOT NULL, 
+	serch_id INTEGER NOT NULL,
+   	serch_text TEXT NULL,
+	postcode TEXT NULL,
+	latitude INTEGER NULL,
+	longitude INTEGER NULL,
+	datetime TEXT NOT NULL,
+	temperature INTEGER NOT NULL,
+	windspeed INTEGER NOT NULL,
+	winddirection INTEGER NOT NULL,
+	weathercode INTEGER NOT NULL
+)`
