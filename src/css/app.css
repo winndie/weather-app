@@ -1,8 +1,33 @@
 /* Your app custom styles here */
 :root {
-    --deg: 0deg
+    --angle: 0deg;
+    --temperature-min: 0.00;
+    --temperature-max: 1.00;
 }
 
 .wind-direction {
-    rotate: var(--deg)
+    rotate: var(--angle)
+}
+
+.temperature-gradient {
+    background-color: rgba(255,255,255,0);
+    background-image: linear-gradient(to bottom, rgba(255,0,0,var(--temperature-min)), rgba(255,0,0,var(--temperature-max)));
+}
+
+.temperature-unit {
+    content: \2103;
+    vertical-align: super;
+}
+
+.windspeed-unit {
+    vertical-align: baseline;
+}
+
+.items-center {
+    display:flex;
+    justify-content:center;    
+}
+
+.text-center {
+    text-align: center;
 }

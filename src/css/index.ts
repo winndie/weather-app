@@ -1,3 +1,3 @@
-export function setStyleValue (id,value){
-    document.documentElement.style.setProperty('--'+id, value+id)
+export function setStyleValue (id,value,suffix){
+    document.documentElement.style.setProperty('--'+id, value+suffix)
 }

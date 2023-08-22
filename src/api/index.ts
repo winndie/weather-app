@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { ILocation, IWeather,IWeatherResult, IWeatherResultDto } from '../types'
+import { ILocation, IRange, IWeather,IWeatherResult, IWeatherResultDto } from '../types'
 import { setCurrentLocation,setAppLoading } from '../store/app'
 import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
+import {mapCurrentWeather, mapRange, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -46,20 +47,21 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string,i
 
 export async function getWeatherByLocation(location:ILocation):Promise<IWeatherResult>{
     const result = {
-        location : {} as ILocation,
-        weather : {} as IWeather
-    } as IWeatherResult
-    const request = `${import.meta.env.VITE_OPEN_METEO_URL}?current_weather=true&latitude=${location.latitude}&longitude=${location.longitude}`
+        location: {} as ILocation,
+        temperature: {} as IRange,
+        windSpeed: {} as IRange,
+        currentWeather: {} as IWeather,
+        hourlyWeather: [] as IWeather[]
+        } as IWeatherResult
+    const request = `${import.meta.env.VITE_OPEN_METEO_URL}latitude=${location.latitude}&longitude=${location.longitude}`
     const resp = await axios.get(request)
-    if(resp.status === 200 && resp.data.current_weather)
+    if(resp.status === 200)
     {
         result.location.latitude = location.latitude
         result.location.longitude = location.longitude
-        result.datetime = resp.data.current_weather.time
-        result.weather.temperature = resp.data.current_weather.temperature
-        result.weather.windSpeed = resp.data.current_weather.windspeed
-        result.weather.windDirection = resp.data.current_weather.winddirection
-        result.weather.weatherCode = resp.data.current_weather.weathercode
+        result.currentWeather = mapCurrentWeather(resp.data.current_weather)
+        result.temperature = mapTemperatureRange(resp.data)
+        result.windSpeed = mapWindSpeedRange(resp.data)
     }
     return result
 }

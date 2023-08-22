@@ -9,17 +9,22 @@ import {
   ListItem,
   Preloader,
   Icon,
+  Card,
+  BlockTitle,
 } from 'framework7-react';
 import { RootState, useAppDispatch } from '../store'
 import { useSelector } from 'react-redux'
 import { getWeatherBySearchText } from '../api'
 import { setStyleValue } from '../css';
+import { weatherCode } from '../constants';
+import WeatherBox from '../components/weather';
 
 const HomePage = () => {
   const dispatch = useAppDispatch()
   const {appName} = useSelector((state:RootState) => state.app)
   const {loading,list} = useSelector((state:RootState) => state.weather)
-  const icon = 'arrow_up'
+  const defaultWeatherCode = parseInt(import.meta.env.VITE_DEFAULT_WEATHER_CODE)
+  const windDirectionIcon = 'arrow_up'
 
   useEffect(()=>{
       dispatch(getWeatherBySearchText({searchText:'G2 4AA',isPostcode:true}))
@@ -34,23 +39,20 @@ const HomePage = () => {
           <Searchbar searchContainer=".search-list" searchIn=".item-title" />
         </Subnavbar>
     </Navbar>
-    <Block>
+    <>
     {list.length === 0?
-      <List strongIos outlineIos dividersIos className="searchbar-not-found">
+      <List  dividersIos simpleList className="searchbar-not-found">
       <ListItem title="Nothing found" />
     </List>
     :
-    list.map(x=>{
-
-      setStyleValue('deg',x.weather.windDirection)
-    
+    list.map((x,i)=>{
     return (
-      <List strongIos outlineIos dividersIos className="search-list searchbar-found">
-      <div>{x.weather.temperature}</div><Icon f7={icon} ios={'f7:'+icon} className='wind-direction'></Icon>
+      <List key={i} dividersIos mediaList outlineIos strongIos>
+        <WeatherBox weather={x.currentWeather} temperature={x.temperature} isCurrent={true}/>
       </List>  
     )})
     }
-    </Block>
+    </>
   </Page>
 )
 }
