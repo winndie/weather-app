@@ -100,3 +100,12 @@ export async function getLocationBySearchText(searchText:string):Promise<ILocati
     }
     return result
 }
+
+export async function writeToDb(){
+    try{
+    }catch(e){
+
+    }finally{
+
+    }
+}

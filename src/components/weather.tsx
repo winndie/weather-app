@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
   Card,
   Icon,
 } from 'framework7-react'
-import { setStyleValue } from '../css'
 import { monthNames, weatherCode } from '../constants'
 import { IRange, IWeather } from '../types'
 
@@ -13,6 +12,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
   const weatherCodeDto =  weatherCode.has(props.weather.weatherCode)?
                           weatherCode.get(props.weather.weatherCode):
                           weatherCode.get(defaultWeatherCode)
+  const max = (Math.abs(props.temperature.max-props.weather.temperature)/Math.abs(props.temperature.max-props.temperature.min))
 
   const temperatureDiv = () => {
 
@@ -22,11 +22,6 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
         + ', ' + props.weather.datetime.substring(props.weather.datetime.length-5)
 
     const hour = props.weather.datetime.substring(props.weather.datetime.length-5)
-
-    if(!props.isCurrent){
-        const max = props.weather.temperature/((props.temperature.max-props.temperature.min)/10)
-        setStyleValue('temperature-max',max,'')    
-    }
 
     return (<div className='text-align-center'>
     <div>{props.isCurrent?currentDate:hour}</div>
@@ -49,36 +44,35 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
   }
 
   const windspeedDiv = () => {
-    setStyleValue('angle',props.weather.windDirection,'deg')
-
     return (
         <div className='align-items-center text-align-center'>
-        <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} className='wind-direction'/>
+        <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} style={{rotate:props.weather.windDirection+'deg'}}/>
         <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
         </div>    
     )
   }
-    
+
   return (
     props.isCurrent?
-    <Card className={'padding align-self-center'}>
+        <Card className={'padding align-self-center'}>
 
-    <div className='grid grid-cols-1 medium-grid-cols-2 grid-gap'>
-        {temperatureDiv()}
-        {weatherCodeDiv()}
-    </div>
+        <div className='grid grid-cols-1 medium-grid-cols-2 grid-gap'>
+            {temperatureDiv()}
+            {weatherCodeDiv()}
+        </div>
 
-    <div className='align-content-center'>
-        {windspeedDiv()}
-    </div>
+        <div className='align-content-center'>
+            {windspeedDiv()}
+        </div>
 
-    </Card>
-    :
-    <div className={'margin-right padding hourly'}>
-        {temperatureDiv()}
-        {weatherCodeDiv()}
-        {windspeedDiv()}
-    </div>
-)}
+        </Card>
+        :
+        <div className={'margin-right padding hourly'} style={{backgroundImage:`linear-gradient(to bottom, rgba(255,0,0,0), rgba(255,0,0,${max}))`}}>
+            {temperatureDiv()}
+            {weatherCodeDiv()}
+            {windspeedDiv()}
+        </div>
+  )
+}
 
 export default WeatherBox

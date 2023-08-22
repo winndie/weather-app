@@ -1,14 +1,4 @@
 /* Your app custom styles here */
-:root {
-    --angle: 0deg;
-    --temperature-min: 0.00;
-    --temperature-max: 1.00;
-}
-
-.wind-direction {
-    rotate: var(--angle)
-}
-
 .temperature-unit {
     content: \2103;
     vertical-align: super;
@@ -22,11 +12,12 @@
     height: 180px;
     width: 60px;
     background-color: rgba(255,255,255,0);
-    background-image: linear-gradient(to bottom, rgba(255,0,0,var(--temperature-min)), rgba(255,0,0,var(--temperature-max)));
 }
+
 .hourly-weather-code {
     height: 80px;
 }
+
 .hourly-list {
     overflow-x: auto;
 }

@@ -12,7 +12,7 @@ export const weatherSlice = createSlice({
             state.loading = action.payload
         },      
         addWeatherList: (state, action:PayloadAction<IWeatherResult>) => {
-            state.list = [...state.list,action.payload]
+            state.list = [action.payload,...state.list]
         },      
     },
   })
