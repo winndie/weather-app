@@ -12,7 +12,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
   const weatherCodeDto =  weatherCode.has(props.weather.weatherCode)?
                           weatherCode.get(props.weather.weatherCode):
                           weatherCode.get(defaultWeatherCode)
-  const max = (Math.abs(props.temperature.max-props.weather.temperature)/Math.abs(props.temperature.max-props.temperature.min))
+  const max = (Math.abs(props.weather.temperature-props.temperature.min)/Math.abs(props.temperature.max-props.temperature.min))
 
   const temperatureDiv = () => {
 
