@@ -5,7 +5,7 @@ import { setCurrentLocation,setAppLoading } from '../store/app'
 import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
-import {mapCurrentWeather, mapRange, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
+import {mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -60,6 +60,7 @@ export async function getWeatherByLocation(location:ILocation):Promise<IWeatherR
         result.location.latitude = location.latitude
         result.location.longitude = location.longitude
         result.currentWeather = mapCurrentWeather(resp.data.current_weather)
+        result.hourlyWeather = mapHourlyWeather(resp.data)
         result.temperature = mapTemperatureRange(resp.data)
         result.windSpeed = mapWindSpeedRange(resp.data)
     }

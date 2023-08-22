@@ -10,6 +10,22 @@ export const mapCurrentWeather=(data):IWeather=>{
     }
 }
 
+export const mapHourlyWeather=(data):IWeather[]=>{
+    const result = [] as IWeather[]
+
+    for (let i = 0; i < data.hourly.time.length; i++) {
+        result.push({
+                datetime : data.hourly.time[i],
+                temperature : data.hourly.temperature_2m[i],
+                windSpeed : data.hourly.windspeed_10m[i],
+                windDirection : data.hourly.winddirection_10m[i],
+                weatherCode : data.hourly.weathercode[i]
+            })
+    }
+
+    return result
+}
+
 export const mapTemperatureRange=(data):IRange=>{
     return {
         min: data.daily.temperature_2m_min[0],

@@ -23,6 +23,11 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
 
     const hour = props.weather.datetime.substring(props.weather.datetime.length-5)
 
+    if(!props.isCurrent){
+        const max = props.weather.temperature/((props.temperature.max-props.temperature.min)/10)
+        setStyleValue('temperature-max',max,'')    
+    }
+
     return (<div className='text-center'>
     <div>{props.isCurrent?currentDate:hour}</div>
     <div><span >{props.weather.temperature}</span><abbr className='temperature-unit'>&#8451;</abbr></div>
@@ -38,7 +43,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     setStyleValue('angle',props.weather.windDirection,'deg')
 
     return (
-        <div>
+        <div className='text-center'>
         <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} className='wind-direction'/>
         <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
         </div>    
@@ -46,7 +51,8 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
   }
     
   return (
-    <Card className={props.isCurrent? '':'temperature-gradient'+'padding margin align-self-center'}>
+    props.isCurrent?
+    <Card className={'padding margin align-self-center'}>
 
     <div className='grid grid-cols-1 medium-grid-cols-2 grid-gap'>
         {temperatureDiv()}
@@ -57,6 +63,12 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
         {windspeedDiv()}
     </div>
 
+    </Card>
+    :
+    <Card className={'temperature-gradient padding align-self-center'}>
+        {temperatureDiv()}
+        {weatherCodeDiv()}
+        {windspeedDiv()}
     </Card>
 )}
 
