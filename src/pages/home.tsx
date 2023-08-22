@@ -39,7 +39,9 @@ const HomePage = () => {
     list.map((x,i)=>(
       <List key={i} dividersIos mediaList outlineIos strongIos>
         <WeatherBox weather={x.currentWeather} temperature={x.temperature} isCurrent={true} />
+        <div className='display-flex'>
         {x.hourlyWeather.map(y=><WeatherBox weather={y} temperature={x.temperature} isCurrent={false} />)}
+        </div>
       </List>
     ))
     }
