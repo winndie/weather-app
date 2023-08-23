@@ -12,8 +12,12 @@ import { useSelector } from 'react-redux'
 import WeatherBox from '../components/weather';
 import SearchBar from '../components/searchBar';
 import { retrieveWeatherFromDb } from '../api';
+import { SQLiteHook, useSQLite } from 'react-sqlite-hook';
+
+export let sqlite: SQLiteHook;
 
 const HomePage = () => {
+  sqlite = useSQLite()
   const dispatch = useAppDispatch()
   const {appName} = useSelector((state:RootState) => state.app)
   const {loading,list} = useSelector((state:RootState) => state.weather)

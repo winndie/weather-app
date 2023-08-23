@@ -7,13 +7,10 @@ import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
 import {insertTableQuery, mapCurrentWeather, mapDtoToCurrentWeatherResult, mapDtoToHourlyWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
 import { postcodeRegex, selectQuery } from '../constants'
-import {
-    SQLiteDBConnection,
-    SQLiteConnection,
-    CapacitorSQLite,
-  } from "@capacitor-community/sqlite"
 import {createTableQuery} from '../constants'
+import { SQLiteDBConnection} from 'react-sqlite-hook'
 import { Capacitor } from '@capacitor/core'
+import { sqlite } from '../pages/home'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -65,50 +62,45 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
 
 export const retrieveWeatherFromDb = createAsyncThunk<void,void,{state:RootState}>(
     'weather/retrieve',
-    async (request, thunkAPI) => {
+    async (_, thunkAPI) => {
         try{
             setWeatherLoading(true)            
             const platform = Capacitor.getPlatform()
 
             if(platform === 'android' || platform === 'ios')
             {
-                const sql = new SQLiteConnection(CapacitorSQLite)
-                const conn = await sql.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false)
-                
-                if(await conn.isDBOpen() && await conn.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME))
+                if(await getConnection())
                 {
-                    const resp = await conn.query(selectQuery)
-                    if(resp.values)
+                    const conn = await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
+                    if((await conn.isExists()).result)
                     {
-                        const result = [] as IWeatherResult[]
-                        resp.values.map((x:IWeatherDto)=>{
-                            if(x.is_current === 1)
-                            {
-                                result.push(mapDtoToCurrentWeatherResult(x))
-                            }
-                        })
-
-                        if(result.length>0)
+                        const resp = await conn.query(selectQuery)
+                        if(resp.values)
                         {
+                            const result = [] as IWeatherResult[]
                             resp.values.map((x:IWeatherDto)=>{
-                                if(x.is_current  === 0 && result.length > x.serch_id)
+                                if(x.is_current === 1)
                                 {
-                                    result[x.serch_id].hourlyWeather.push(mapDtoToHourlyWeather(x))
+                                    result.push(mapDtoToCurrentWeatherResult(x))
                                 }
-                            })    
+                            })
+        
+                            if(result.length>0)
+                            {
+                                resp.values.map((x:IWeatherDto)=>{
+                                    if(x.is_current  === 0 && result.length > x.serch_id)
+                                    {
+                                        result[x.serch_id].hourlyWeather.push(mapDtoToHourlyWeather(x))
+                                    }
+                                })    
+                            } 
+                            result.map(x=>thunkAPI.dispatch(addWeatherList( x )))        
                         }
-
-                        result.map(x=>thunkAPI.dispatch(addWeatherList( x )))
                     }
                 }
-        
-                if(sql != null)
-                {
-                    sql.closeAllConnections()
-                }    
             }
         }catch(e){
-
+            console.error(e)
         }finally{
             setWeatherLoading(false)
         }
@@ -168,22 +160,43 @@ export async function writeToDb(weather:IWeatherResult,searchId:number):Promise<
 
         if(platform === 'android' || platform === 'ios')
         {
-            const sql = new SQLiteConnection(CapacitorSQLite)
-            const conn = await sql.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false)
-
-            await conn.isDBOpen() 
-            && await conn.execute(createTableQuery) 
-            && await conn.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME) 
-            && await conn.execute(insertTableQuery(weather,searchId))
-    
-            if(sql != null)
+            if(await getConnection())
             {
-                sql.closeAllConnections()
-                result = true
-            }    
+                const conn = await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
+                if((await conn.isExists()).result)
+                {
+                    await conn.execute(createTableQuery)
+                    const insertResp = await conn.execute(insertTableQuery(weather,searchId))
+                    result = true
+                }    
+            }
         }
     }catch(e){
+        console.error(e)
     }finally{
         return result
     }
+}
+
+async function getConnection():Promise<boolean>{
+    let result = false as boolean
+    const db: SQLiteDBConnection = (await sqlite.isConnection(import.meta.env.VITE_DEFAULT_DB_NAME)).result?
+    await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
+    :
+    await sqlite.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
+
+    if(!(await db.isDBOpen()).result)
+    {
+        await db.open()
+    }
+
+    if(!(await db.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME)).result)
+    {
+        const resp = await db.execute(createTableQuery)
+        if (resp.changes?.changes) 
+        {
+            result = true
+        }    
+    }        
+    return result
 }
