@@ -46,4 +46,4 @@ export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VI
 	weather TEXT NOT NULL
 )`
 
-export const selectQuery = `SELECT * FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
+export const selectQuery = `SELECT weather FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
