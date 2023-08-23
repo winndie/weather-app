@@ -1,100 +1,54 @@
-# Weather App
+### Features
+[ ] City Input - Not implemented
+[X] Postcode Input - Implemented. If search text is not a valid postcode, no result will be shown 
+[X] Current Weather - Implemented with temperature, weather code, wind speed and direction 
+[X] Weather Forecast - Implemented with temperature, weather code, wind speed and direction
+[X] Geolocation - Not implemented
+[X] Data Storage - Implemented on android only
+[X] Offline First - Implemented on android only
 
-## Framework7 CLI Options
+### Running the application locally
 
-Framework7 app created with following options:
+**Prerequisite:** 
+[Node.js](https://nodejs.org/en/)
+[Android Studio Device Management]
+[XCode]
+[XCode-select]
 
-```
-{
-  "cwd": "C:\\work\\SecuriGroup",
-  "type": [
-    "capacitor",
-    "web"
-  ],
-  "name": "Weather App",
-  "framework": "react",
-  "template": "single-view",
-  "bundler": "vite",
-  "cssPreProcessor": false,
-  "theming": {
-    "customColor": false,
-    "color": "#007aff",
-    "darkMode": false,
-    "iconFonts": true
-  },
-  "customBuild": false,
-  "pkg": "com.codingegret.weatherapp",
-  "capacitor": {
-    "platforms": [
-      "ios",
-      "android"
-    ]
-  }
-}
-```
+Clone this repository onto your machine
 
-## Install Dependencies
+Run:
 
-First of all we need to install dependencies, run in terminal
 ```
 npm install
 ```
 
-## NPM Scripts
+This will install dependencies and create a `node_modules` folder locally.
 
-* 🔥 `start` - run development server
-* 🔧 `dev` - run development server
-* 🔧 `build` - build web app for production
-* 📱 `build-capacitor-ios` - build app and copy it to iOS capacitor project
-* 📱 `build-capacitor-android` - build app and copy it to Android capacitor project
-
-## Vite
-
-There is a [Vite](https://vitejs.dev) bundler setup. It compiles and bundles all "front-end" resources. You should work only with files located in `/src` folder. Vite config located in `vite.config.js`.
-## Capacitor
-
-This project created with Capacitor support. And first thing required before start is to add capacitor platforms, run in terminal:
+To start the application on browser:
 
 ```
-npx cap add ios && npx cap add android
+npm run start
 ```
 
-Check out [official Capacitor documentation](https://capacitorjs.com) for more examples and usage examples.
+The application will then be accessible at:
 
-## Assets
+http://localhost:5173
 
-Assets (icons, splash screens) source images located in `assets-src` folder. To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
-
-```
-framework7 assets
-```
-
-Or launch UI where you will be able to change icons and splash screens:
+To start the application on android:
 
 ```
-framework7 assets --ui
+npm run android
 ```
 
-## Capacitor Assets
+To start the application on iso (on Mac):
 
-Capacitor assets are located in `resources` folder which is intended to be used with `cordova-res` tool. To generate  mobile apps assets run in terminal:
 ```
-npx cordova-res
+npm run ios
 ```
 
-Check out [official cordova-res documentation](https://github.com/ionic-team/cordova-res) for more usage examples.
-
-## Documentation & Resources
-
-* [Framework7 Core Documentation](https://framework7.io/docs/)
-
-* [Framework7 React Documentation](https://framework7.io/react/)
-
-* [Framework7 Icons Reference](https://framework7.io/icons/)
-* [Community Forum](https://forum.framework7.io)
-
-## Support Framework7
-
-Love Framework7? Support project by donating or pledging on:
-- Patreon: https://patreon.com/framework7
-- OpenCollective: https://opencollective.com/framework7
+### Technology stack used
+[X] ReactTS
+[X] Capacitor
+[X] Framework7
+[X] Sqlite
