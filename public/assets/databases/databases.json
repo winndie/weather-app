@@ -1,5 +1,5 @@
 {
   "databaseList" : [
-    "WEATHER_DBSQLite.db"
+    "weatherSQLite.db"
   ]
 }
