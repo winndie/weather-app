@@ -43,21 +43,7 @@ export const weatherCode: Map<number, {name:string,icon:string}> = new Map([
 
 export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (
 	id INTEGER PRIMARY KEY,
-    is_current INTEGER NOT NULL, 
-	serch_id INTEGER NOT NULL,
-   	serch_text TEXT NULL,
-	postcode TEXT NULL,
-	latitude INTEGER NULL,
-	longitude INTEGER NULL,
-	temperature_min INTEGER NULL,
-	temperature_max INTEGER NULL,
-	windspeed_min INTEGER NULL,
-	windspeed_max INTEGER NULL,
-	datetime TEXT NOT NULL,
-	temperature INTEGER NOT NULL,
-	windspeed INTEGER NOT NULL,
-	winddirection INTEGER NOT NULL,
-	weathercode INTEGER NOT NULL
+	weather TEXT NOT NULL
 )`
 
 export const selectQuery = `SELECT * FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
