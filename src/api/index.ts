@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { ILocation, IRange, IWeather,IWeatherResult, IWeatherResultDto } from '../types'
+import { ILocation, IRange, IWeather,IWeatherResult } from '../types'
 import { setCurrentLocation,setAppLoading } from '../store/app'
 import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
@@ -13,6 +13,7 @@ import {
     CapacitorSQLite,
   } from "@capacitor-community/sqlite"
 import {createTableQuery} from '../constants'
+import { Capacitor } from '@capacitor/core'
 
 const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
     'location/current/get',
@@ -52,7 +53,7 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
                 weather.searchText = request.searchText
                 weather.postCode = request.searchText
                 thunkAPI.dispatch(addWeatherList( weather ))
-                writeToDb(weather,thunkAPI.getState().weather.list.length)
+                console.error(await writeToDb(weather,thunkAPI.getState().weather.list.length))
             }
         }catch(e){
 
@@ -108,20 +109,29 @@ export async function getLocationBySearchText(searchText:string):Promise<ILocati
     return result
 }
 
-export async function writeToDb(weather:IWeatherResult,searchId:number){
+export async function writeToDb(weather:IWeatherResult,searchId:number):Promise<boolean>{
+    let result = false as boolean
     try{
-        const conn = new SQLiteConnection(CapacitorSQLite)
-        ;(await conn.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false))
-        .execute(createTableQuery)
-        .then(resp=>{
-        })
+        const platform = Capacitor.getPlatform()
 
-        if(conn != null)
+        if(platform === 'android' || platform === 'ios')
         {
-            conn.closeAllConnections()
+            const sql = new SQLiteConnection(CapacitorSQLite)
+            const conn = await sql.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false)
+
+            await conn.isDBOpen() 
+            && await conn.execute(createTableQuery) 
+            && await conn.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME) 
+            && await conn.execute(insertTableQuery(weather,searchId))
+    
+            if(sql != null)
+            {
+                sql.closeAllConnections()
+                result = true
+            }    
         }
     }catch(e){
-
     }finally{
+        return result
     }
 }

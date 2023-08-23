@@ -7,6 +7,7 @@ interface ImportMetaEnv {
     readonly VITE_DEFAULT_WEATHER_CODE: string
     readonly VITE_DEFAULT_DB_NAME: string
     readonly VITE_DEFAULT_TABLE_NAME: string
+    readonly VITE_DEFAULT_WEB_DB_NAME: string
   }
   
   interface ImportMeta {
