@@ -149,13 +149,13 @@ export const retrieveWeatherFromDb = createAsyncThunk<void,void,{state:RootState
 
             if(platform === 'android' || platform === 'ios')
             {
+                sqlite.copyFromAssets(true)
+                
                 const db: SQLiteDBConnection = (await sqlite.isConnection(import.meta.env.VITE_DEFAULT_DB_NAME)).result?
                 await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
                 :
                 await sqlite.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
-                
-                sqlite.copyFromAssets(true)
-            
+                            
                 if(!(await db.isDBOpen()).result)
                 {
                     await db.open()
