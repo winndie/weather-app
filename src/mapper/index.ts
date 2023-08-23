@@ -41,5 +41,4 @@ export const mapWindSpeedRange=(data):IRange=>{
 }
 
 export const insertTableQuery=(weather:IWeatherResult)
-    :string=>`INSERT INTO ${import.meta.env.VITE_DEFAULT_TABLE_NAME} 
-    (weather) VALUES (${JSON.stringify(weather)})`
+    :string=>`INSERT INTO ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (weather) VALUES (${JSON.stringify(weather)})`

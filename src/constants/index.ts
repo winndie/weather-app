@@ -41,9 +41,6 @@ export const weatherCode: Map<number, {name:string,icon:string}> = new Map([
     [25,{name:'Volcanic ash',icon:'arrow_2_circlepath_circle_fill'}],
 ])
 
-export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (
-	id INTEGER PRIMARY KEY,
-	weather TEXT NOT NULL
-)`
+export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (weather TEXT NOT NULL)`
 
 export const selectQuery = `SELECT weather FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
