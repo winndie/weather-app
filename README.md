@@ -1,11 +1,11 @@
 ### Features
-[ ] City Input - Not implemented
-[X] Postcode Input - Implemented. If search text is not a valid postcode, no result will be shown 
-[X] Current Weather - Implemented with temperature, weather code, wind speed and direction 
-[X] Weather Forecast - Implemented with temperature, weather code, wind speed and direction
-[X] Geolocation - Not implemented
-[X] Data Storage - Implemented on android only
-[X] Offline First - Implemented on android only
+- [ ] City Input - Not implemented
+- [X] Postcode Input - Implemented. If search text is not a valid postcode, no result will be shown 
+- [X] Current Weather - Implemented with temperature, weather code, wind speed and direction 
+- [X] Weather Forecast - Implemented with temperature, weather code, wind speed and direction
+- [X] Geolocation - Not implemented
+- [ ] Data Storage - Not implemented
+- [ ] Offline First - Not implemented
 
 ### Running the application locally
 
@@ -48,7 +48,7 @@ npm run ios
 ```
 
 ### Technology stack used
-[X] ReactTS
-[X] Capacitor
-[X] Framework7
-[X] Sqlite
+- [X] ReactTS
+- [X] Capacitor
+- [X] Framework7
+- [X] Sqlite
