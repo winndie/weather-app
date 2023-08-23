@@ -1,4 +1,33 @@
-import { IRange, IWeather, IWeatherResult } from "../types"
+import { IRange, IWeather, IWeatherDto, IWeatherResult } from "../types"
+
+export const mapDtoToHourlyWeather=(dto:IWeatherDto):IWeather=>{
+    return {
+        datetime : dto.datetime,
+        temperature : dto.temperature,
+        windSpeed : dto.windspeed,
+        windDirection : dto.winddirection,
+        weatherCode : dto.weathercode
+    }
+}
+
+export const mapDtoToCurrentWeatherResult=(dto:IWeatherDto):IWeatherResult=>{
+    const result = {
+        searchText:dto.serch_text,
+        postCode:dto.postcode,
+        location:{latitude:dto.latitude,longitude:dto.longitude},
+        temperature:{min:dto.temperature_min,max:dto.temperature_max},
+        windSpeed:{min:dto.windspeed_min,max:dto.windspeed_max},
+        currentWeather:{
+            datetime: dto.datetime,
+            temperature: dto.temperature,
+            windSpeed : dto.windspeed,
+            windDirection : dto.winddirection,
+            weatherCode : dto.weathercode
+        },
+        hourlyWeather:[]
+    }
+    return result as IWeatherResult
+}
 
 export const mapCurrentWeather=(data):IWeather=>{
     return {
@@ -47,6 +76,10 @@ export const insertTableQuery=(weather:IWeatherResult,searchId:number):string=>{
         '${weather.postCode}',
         ${weather.location.latitude},
         ${weather.location.longitude},
+        ${weather.temperature.min},
+        ${weather.temperature.max},
+        ${weather.windSpeed.min},
+        ${weather.windSpeed.max},
         '${weather.currentWeather.datetime}',
         ${weather.currentWeather.temperature},
         ${weather.currentWeather.windSpeed},
@@ -54,6 +87,10 @@ export const insertTableQuery=(weather:IWeatherResult,searchId:number):string=>{
         ${weather.currentWeather.weatherCode}
     ),`
     valuesQuery = valuesQuery + weather.hourlyWeather.map(x=>`(${searchId},0,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,

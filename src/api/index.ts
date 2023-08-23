@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { ILocation, IRange, IWeather,IWeatherResult } from '../types'
+import { ILocation, IRange, IWeather,IWeatherDto,IWeatherResult } from '../types'
 import { setCurrentLocation,setAppLoading } from '../store/app'
 import { Geolocation } from '@capacitor/geolocation'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
-import {insertTableQuery, mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
-import { postcodeRegex } from '../constants'
+import {insertTableQuery, mapCurrentWeather, mapDtoToCurrentWeatherResult, mapDtoToHourlyWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
+import { postcodeRegex, selectQuery } from '../constants'
 import {
     SQLiteDBConnection,
     SQLiteConnection,
@@ -53,7 +53,59 @@ export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},
                 weather.searchText = request.searchText
                 weather.postCode = request.searchText
                 thunkAPI.dispatch(addWeatherList( weather ))
-                console.error(await writeToDb(weather,thunkAPI.getState().weather.list.length))
+                await writeToDb(weather,thunkAPI.getState().weather.list.length)
+            }
+        }catch(e){
+
+        }finally{
+            setWeatherLoading(false)
+        }
+    }
+)
+
+export const retrieveWeatherFromDb = createAsyncThunk<void,void,{state:RootState}>(
+    'weather/retrieve',
+    async (request, thunkAPI) => {
+        try{
+            setWeatherLoading(true)            
+            const platform = Capacitor.getPlatform()
+
+            if(platform === 'android' || platform === 'ios')
+            {
+                const sql = new SQLiteConnection(CapacitorSQLite)
+                const conn = await sql.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME,false,'no-encryption',1,false)
+                
+                if(await conn.isDBOpen() && await conn.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME))
+                {
+                    const resp = await conn.query(selectQuery)
+                    if(resp.values)
+                    {
+                        const result = [] as IWeatherResult[]
+                        resp.values.map((x:IWeatherDto)=>{
+                            if(x.is_current === 1)
+                            {
+                                result.push(mapDtoToCurrentWeatherResult(x))
+                            }
+                        })
+
+                        if(result.length>0)
+                        {
+                            resp.values.map((x:IWeatherDto)=>{
+                                if(x.is_current  === 0 && result.length > x.serch_id)
+                                {
+                                    result[x.serch_id].hourlyWeather.push(mapDtoToHourlyWeather(x))
+                                }
+                            })    
+                        }
+
+                        result.map(x=>thunkAPI.dispatch(addWeatherList( x )))
+                    }
+                }
+        
+                if(sql != null)
+                {
+                    sql.closeAllConnections()
+                }    
             }
         }catch(e){
 

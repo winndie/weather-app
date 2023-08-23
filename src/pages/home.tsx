@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Page,
   Navbar,
@@ -6,16 +6,21 @@ import {
   List,
   ListItem,
   Preloader,
-  Icon,
 } from 'framework7-react';
-import { RootState } from '../store'
+import { RootState, useAppDispatch } from '../store'
 import { useSelector } from 'react-redux'
 import WeatherBox from '../components/weather';
 import SearchBar from '../components/searchBar';
+import { retrieveWeatherFromDb } from '../api';
 
 const HomePage = () => {
+  const dispatch = useAppDispatch()
   const {appName} = useSelector((state:RootState) => state.app)
   const {loading,list} = useSelector((state:RootState) => state.weather)
+
+  useEffect(()=>{
+    dispatch(retrieveWeatherFromDb())
+  },[])
 
   return (
     loading?<Preloader/>:

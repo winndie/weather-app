@@ -49,9 +49,15 @@ export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VI
 	postcode TEXT NULL,
 	latitude INTEGER NULL,
 	longitude INTEGER NULL,
+	temperature_min INTEGER NULL,
+	temperature_max INTEGER NULL,
+	windspeed_min INTEGER NULL,
+	windspeed_max INTEGER NULL,
 	datetime TEXT NOT NULL,
 	temperature INTEGER NOT NULL,
 	windspeed INTEGER NOT NULL,
 	winddirection INTEGER NOT NULL,
 	weathercode INTEGER NOT NULL
 )`
+
+export const selectQuery = `SELECT * FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
