@@ -164,7 +164,7 @@ export const retrieveWeatherFromDb = createAsyncThunk<void,void,{state:RootState
                 if((await db.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME)).result)
                 {
                     const resp = await db.query(selectQuery)
-                    resp.values?.map(x=>thunkAPI.dispatch(addWeatherList( x )))
+                    resp.values?.map(x=>thunkAPI.dispatch(addWeatherList( JSON.parse(x) )))
                 }
         }
         }catch(e){
