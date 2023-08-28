@@ -46,7 +46,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
   const windspeedDiv = () => {
     return (
         <div className='align-items-center text-align-center'>
-        <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} style={{rotate:props.weather.windDirection+'deg'}}/>
+        <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} style={{rotate:`${props.weather.windDirection}deg`}}/>
         <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
         </div>    
     )

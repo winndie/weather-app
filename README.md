@@ -1,11 +1,11 @@
 ### Features
 - [ ] City Input - Not implemented
-- [X] Postcode Input - Implemented. If search text is not a valid postcode, no result will be shown 
+- [X] Postcode Input - Implemented, If search text is not a valid postcode, no result will be shown 
 - [X] Current Weather - Implemented with temperature, weather code, wind speed and direction 
-- [X] Weather Forecast - Implemented with temperature, weather code, wind speed and direction
+- [X] Weather Forecast - Implemented with hourly weather
 - [X] Geolocation - Not implemented
-- [ ] Data Storage - Not implemented
-- [ ] Offline First - Not implemented
+- [X] Data Storage - Implemented with SQLite, search result is stored in weatherSQLite.db
+- [X] Offline First - Implemented, stored search result can be retrieved when app is re-open.
 
 ### Running the application locally
 
