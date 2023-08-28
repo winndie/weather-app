@@ -11,7 +11,7 @@ import { RootState, useAppDispatch } from '../store'
 import { useSelector } from 'react-redux'
 import WeatherBox from '../components/weather';
 import SearchBar from '../components/searchBar';
-import { retrieveWeatherFromDb } from '../api';
+import { readFromDB } from '../api';
 import { SQLiteHook, useSQLite } from 'react-sqlite-hook';
 
 export let sqlite: SQLiteHook;
@@ -23,7 +23,7 @@ const HomePage = () => {
   const {loading,list} = useSelector((state:RootState) => state.weather)
 
   useEffect(()=>{
-    dispatch(retrieveWeatherFromDb())
+    dispatch(readFromDB())
   },[])
 
   return (

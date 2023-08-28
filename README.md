@@ -10,10 +10,10 @@
 ### Running the application locally
 
 **Prerequisite:** 
-[Node.js](https://nodejs.org/en/)
-[Android Studio Device Management]
-[XCode]
-[XCode-select]
+- [Node.js](https://nodejs.org/en/)
+- [Android Studio Device Management]
+- [XCode]
+- [XCode-select]
 
 Clone this repository onto your machine
 

@@ -1,65 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { ILocation, IRange, IWeather,IWeatherDto,IWeatherResult } from '../types'
-import { setCurrentLocation,setAppLoading } from '../store/app'
-import { Geolocation } from '@capacitor/geolocation'
+import { ILocation, IRange, IWeather,IWeatherResult } from '../types'
 import axios from 'axios'
 import { addWeatherList, setWeatherLoading } from '../store/weather'
-import {insertTableQuery, mapCurrentWeather, mapDtoToCurrentWeatherResult, mapDtoToHourlyWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
-import { postcodeRegex, selectQuery } from '../constants'
+import {insertQuery, mapCurrentWeather, mapHourlyWeather, mapTemperatureRange, mapWindSpeedRange} from '../mapper'
+import { invalidPostcodeRegex, selectQuery } from '../constants'
 import {createTableQuery} from '../constants'
 import { SQLiteDBConnection} from 'react-sqlite-hook'
 import { Capacitor } from '@capacitor/core'
 import { sqlite } from '../pages/home'
-
-const getCurrentLocation = createAsyncThunk<void,void,{state:RootState}>(
-    'location/current/get',
-    async (_, thunkAPI) => {
-        try{
-            setAppLoading(true)
-            const result = {location:{} as ILocation}
-            const resp = await Geolocation.getCurrentPosition()
-            if(resp.coords)
-            {
-                result.location.latitude = resp.coords.latitude
-                result.location.longitude = resp.coords.longitude
-                setCurrentLocation(result.location)
-            }
-
-        }catch(e){
-
-        }finally{
-            setAppLoading(false)
-        }
-    }
-)
-
-export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},{state:RootState}>(
-    'weather/postcode/get',
-    async (request, thunkAPI) => {
-        try{
-            setWeatherLoading(true)            
-            const isPostCode = new RegExp(postcodeRegex).test(request.searchText)
-
-            if(isPostCode)
-                return
-
-            const weather = await getWeatherByLocation(await getLocationByPostcode(request.searchText))
-            if(weather && weather.hourlyWeather.length>0)
-            {
-                weather.searchText = request.searchText
-                weather.postCode = request.searchText
-                thunkAPI.dispatch(addWeatherList( weather ))
-                await writeToDb(weather,thunkAPI.getState().weather.list.length)
-            }
-        }catch(e){
-
-        }finally{
-            setWeatherLoading(false)
-        }
-    }
-)
-
 
 export async function getWeatherByLocation(location:ILocation):Promise<IWeatherResult>{
     const result = {
@@ -107,68 +56,83 @@ export async function getLocationBySearchText(searchText:string):Promise<ILocati
     return result
 }
 
-export async function writeToDb(weather:IWeatherResult,searchId:number):Promise<boolean>{
-    let result = false as boolean
-    try{
-        const platform = Capacitor.getPlatform()
+async function getDbConnection():Promise<SQLiteDBConnection|undefined>{
 
-        if(platform === 'android' || platform === 'ios')
+    let db = undefined as SQLiteDBConnection|undefined
+    const platform = Capacitor.getPlatform()
+    
+    if(platform === 'android' || platform === 'ios')
+    {
+        if(!(await sqlite.isDatabase(import.meta.env.VITE_DEFAULT_DB_NAME)).result)
         {
-            const db: SQLiteDBConnection = (await sqlite.isConnection(import.meta.env.VITE_DEFAULT_DB_NAME)).result?
-            await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
-            :
-            await sqlite.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME)    
-        
-            if(!(await db.isDBOpen()).result)
-            {
-                await db.open()
-            }
-        
-            if(!(await db.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME)).result)
-            {
-                const resp = await db.execute(createTableQuery)
-            }
+            await sqlite.copyFromAssets()
+        }
 
-            if((await db.isExists()).result)
-            {
-                await db.execute(insertTableQuery(weather))
-            }    
+        db = (await sqlite.isConnection(import.meta.env.VITE_DEFAULT_DB_NAME)).result?
+        await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
+        :
+        await sqlite.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME)    
+    
+        if(!(await db.isDBOpen()).result)
+        {
+            await db.open()
+        }
+    
+        if(!(await db.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME)).result)
+        {
+            await db.execute(createTableQuery)
+        }
     }
-    }catch(e){
-    }finally{
-        return result
-    }
-}
 
-export const retrieveWeatherFromDb = createAsyncThunk<void,void,{state:RootState}>(
+    return db
+} 
+
+export const readFromDB = createAsyncThunk<void,void,{state:RootState}>(
     'weather/retrieve',
     async (_, thunkAPI) => {
         try{
-            setWeatherLoading(true)            
-            const platform = Capacitor.getPlatform()
-
-            if(platform === 'android' || platform === 'ios')
+            setWeatherLoading(true) 
+            const conn = await getDbConnection()
+            if(conn)
             {
-                sqlite.copyFromAssets(true)
-                
-                const db: SQLiteDBConnection = (await sqlite.isConnection(import.meta.env.VITE_DEFAULT_DB_NAME)).result?
-                await sqlite.retrieveConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
-                :
-                await sqlite.createConnection(import.meta.env.VITE_DEFAULT_DB_NAME)
-                            
-                if(!(await db.isDBOpen()).result)
-                {
-                    await db.open()
-                }
-            
-                if((await db.isTable(import.meta.env.VITE_DEFAULT_TABLE_NAME)).result)
-                {
-                    const resp = await db.query(selectQuery)
-                    resp.values?.map(x=>thunkAPI.dispatch(addWeatherList( JSON.parse(x) )))
-                }
-        }
+                const resp = await conn.query(selectQuery)
+                resp.values?.map(x=>thunkAPI.dispatch(addWeatherList( JSON.parse(x.weather) )))
+            }           
         }catch(e){
         }finally{
+            await sqlite.closeAllConnections()
+            setWeatherLoading(false)
+        }
+    }
+)
+
+export const getWeatherBySearchText = createAsyncThunk<void,{searchText:string},{state:RootState}>(
+    'weather/postcode/get',
+    async (request, thunkAPI) => {
+        try{
+            setWeatherLoading(true)            
+            const isPostCode = !(new RegExp(invalidPostcodeRegex).test(request.searchText))
+
+            if(isPostCode)
+            {
+                const weather = await getWeatherByLocation(await getLocationByPostcode(request.searchText))
+                if(weather && weather.hourlyWeather.length>0)
+                {
+                    weather.searchText = request.searchText
+                    weather.postCode = request.searchText
+                    thunkAPI.dispatch(addWeatherList( weather ))
+
+                    const conn = await getDbConnection()
+                    if(conn)
+                    {
+                        await conn.executeSet(insertQuery(weather))
+                    }           
+                }    
+            }
+
+        }catch(e){
+        }finally{
+            await sqlite.closeAllConnections()
             setWeatherLoading(false)
         }
     }

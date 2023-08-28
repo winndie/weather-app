@@ -1,5 +1,5 @@
 
-export const postcodeRegex = /^([A-Z]{1,2}[0-9]{1,2}[A-Z]{0,1} ?[0-9]{1,2}[A-Z]{0,1})$/
+export const invalidPostcodeRegex = /^([A-Z]{1,2}[0-9]{1,2}[A-Z]{0,1} ?[0-9]{1,2}[A-Z]{0,1})$/
 
 export const monthNames: Map<number,string> = new Map([
     [0,'January'],
@@ -41,6 +41,6 @@ export const weatherCode: Map<number, {name:string,icon:string}> = new Map([
     [25,{name:'Volcanic ash',icon:'arrow_2_circlepath_circle_fill'}],
 ])
 
-export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (weather TEXT NOT NULL)`
+export const createTableQuery = `CREATE TABLE IF NOT EXISTS ${import.meta.env.VITE_DEFAULT_TABLE_NAME} (weather TEXT);`
 
-export const selectQuery = `SELECT weather FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME}`
+export const selectQuery = `SELECT weather FROM ${import.meta.env.VITE_DEFAULT_TABLE_NAME};`
