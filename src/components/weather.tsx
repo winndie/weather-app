@@ -29,8 +29,7 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     </div>)
   }
 
-  const weatherCodeDiv = () => {
-    return props.isCurrent?
+  const weatherCodeDiv = props.isCurrent?
     <div className={'align-items-center text-align-center'}>
     <Icon f7={weatherCodeDto?.icon} ios={'f7:'+weatherCodeDto?.icon}></Icon>
     <div>{weatherCodeDto?.name}</div>
@@ -40,17 +39,11 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
     <Icon f7={weatherCodeDto?.icon} ios={'f7:'+weatherCodeDto?.icon}></Icon>
     <div>{weatherCodeDto?.name}</div>
     </div>
-    
-  }
 
-  const windspeedDiv = () => {
-    return (
-        <div className='align-items-center text-align-center'>
-        <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} style={{rotate:`${props.weather.windDirection}deg`}}/>
-        <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
-        </div>    
-    )
-  }
+  const windspeedDiv = <div className='align-items-center text-align-center'>
+    <Icon f7={windDirectionIcon} ios={'f7:'+windDirectionIcon} style={{rotate:`${props.weather.windDirection}deg`}}/>
+    <div><span >{props.weather.windSpeed}</span><abbr className='windspeed-unit'>km/h</abbr></div>
+    </div>
 
   return (
     props.isCurrent?
@@ -58,19 +51,19 @@ const WeatherBox:React.FC<{weather:IWeather,temperature:IRange, isCurrent:boolea
 
         <div className='grid grid-cols-1 medium-grid-cols-2 grid-gap'>
             {temperatureDiv()}
-            {weatherCodeDiv()}
+            {weatherCodeDiv}
         </div>
 
         <div className='align-content-center'>
-            {windspeedDiv()}
+            {windspeedDiv}
         </div>
 
         </Card>
         :
         <div className={'margin-right padding hourly'} style={{backgroundImage:`linear-gradient(to bottom, rgba(255,0,0,0), rgba(255,0,0,${max}))`}}>
             {temperatureDiv()}
-            {weatherCodeDiv()}
-            {windspeedDiv()}
+            {weatherCodeDiv}
+            {windspeedDiv}
         </div>
   )
 }

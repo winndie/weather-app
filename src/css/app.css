@@ -17,7 +17,3 @@
 .hourly-weather-code {
     height: 80px;
 }
-
-.hourly-list {
-    overflow-x: auto;
-}
